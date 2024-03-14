@@ -22,14 +22,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Instagram Clone ',
-        theme: ThemeData.dark()
-            .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
-        //   home: ResponsiveScreenLayout(
-        //       webScreenLayout: WebScreenLayout(),
-        //       mobileScreenLayout: MobileScreenLayout()),
-        // );
-        home: SignUpScreen());
+      debugShowCheckedModeBanner: false,
+      title: 'Instagram Clone ',
+      theme: ThemeData.dark()
+          .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
+      //   home: ResponsiveScreenLayout(
+      //       webScreenLayout: WebScreenLayout(),
+      //       mobileScreenLayout: MobileScreenLayout()),
+      // );
+      home: LoginScreen(),
+    );
   }
 }
