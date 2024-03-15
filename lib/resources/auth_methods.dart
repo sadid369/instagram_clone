@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/models/user.dart';
 import 'package:instagram_clone/resources/storage_methods.dart';
 
 class AuthMethods {
@@ -28,17 +29,22 @@ class AuthMethods {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
         log(cred.user!.uid);
+
         String photoUrl = await StorageMethods().uploadImageToStorage(
             childName: 'profilePic', file: file, isPost: false);
-        await _firestore.collection('users').doc(cred.user!.uid).set({
-          'username': username,
-          'uid': cred.user!.uid,
-          'email': email,
-          'bio': bio,
-          'followers': [],
-          'following': [],
-          'photoUrl': photoUrl,
-        });
+
+        UserModel user = UserModel(
+          email: email,
+          uid: cred.user!.uid,
+          photoUrl: photoUrl,
+          username: username,
+          bio: bio,
+          followers: [],
+          following: [],
+        );
+        await _firestore.collection('users').doc(cred.user!.uid).set(
+              user.toMap(),
+            );
         // await _firestore.collection('users').add({
         //   'username': username,
         //   'uid': cred.user!.uid,
@@ -55,6 +61,25 @@ class AuthMethods {
         res = 'The email is badly formatted';
       } else if (err.code == 'weak-password') {
         res = 'Password should be at least 6 characters';
+      }
+    } catch (e) {
+      res = e.toString();
+    }
+
+    return res;
+  }
+
+  // login user
+  Future<String> loginUser(
+      {required String email, required String password}) async {
+    String res = 'Some error accursed';
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+        res = "Success";
+      } else {
+        res = 'Please Enter All Fields';
       }
     } catch (e) {
       res = e.toString();
